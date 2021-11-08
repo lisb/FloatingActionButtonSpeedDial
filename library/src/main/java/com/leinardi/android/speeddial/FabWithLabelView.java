@@ -22,7 +22,6 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -299,23 +298,25 @@ public class FabWithLabelView extends LinearLayout {
     private void setFabSize(@FloatingActionButton.Size int fabSize) {
         int normalFabSizePx = getContext().getResources().getDimensionPixelSize(R.dimen.sd_fab_normal_size);
         int miniFabSizePx = getContext().getResources().getDimensionPixelSize(R.dimen.sd_fab_mini_size);
-        int fabSideMarginPx = getContext().getResources().getDimensionPixelSize(R.dimen.sd_fab_side_margin);
-        int fabSizePx = fabSize == SIZE_NORMAL ? normalFabSizePx : miniFabSizePx;
+        int miniFabMarginPx = getContext().getResources().getDimensionPixelSize(R.dimen.sd_fab_mini_margin_between_item);
+        int normalFabMarginPx = getContext().getResources().getDimensionPixelSize(R.dimen.sd_fab_normal_margin_between_item);
+        int fabSizeWithMarginPx = fabSize == SIZE_NORMAL ?
+                normalFabSizePx + normalFabMarginPx * 2 : miniFabSizePx + miniFabMarginPx * 2;
         LayoutParams rootLayoutParams;
         LayoutParams fabLayoutParams = (LayoutParams) mFab.getLayoutParams();
         if (getOrientation() == HORIZONTAL) {
-            rootLayoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, fabSizePx);
+            rootLayoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, fabSizeWithMarginPx);
             rootLayoutParams.gravity = Gravity.END;
 
             if (fabSize == SIZE_NORMAL) {
-                int excessMargin = (normalFabSizePx - miniFabSizePx) / 2;
-                fabLayoutParams.setMargins(fabSideMarginPx - excessMargin, 0, fabSideMarginPx - excessMargin, 0);
+                fabLayoutParams.setMargins(0, 0, 0, 0);
             } else {
-                fabLayoutParams.setMargins(fabSideMarginPx, 0, fabSideMarginPx, 0);
+                int excessMargin = (normalFabSizePx - miniFabSizePx) / 2;
+                fabLayoutParams.setMargins(excessMargin, 0, excessMargin, 0);
 
             }
         } else {
-            rootLayoutParams = new LayoutParams(fabSizePx, ViewGroup.LayoutParams.WRAP_CONTENT);
+            rootLayoutParams = new LayoutParams(fabSizeWithMarginPx, ViewGroup.LayoutParams.WRAP_CONTENT);
             rootLayoutParams.gravity = Gravity.CENTER_VERTICAL;
             fabLayoutParams.setMargins(0, 0, 0, 0);
         }
@@ -390,29 +391,13 @@ public class FabWithLabelView extends LinearLayout {
     private void setLabelBackgroundColor(@ColorInt int color) {
         if (color == Color.TRANSPARENT) {
             mLabelCardView.setCardBackgroundColor(Color.TRANSPARENT);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mLabelCardViewElevation = mLabelCardView.getElevation();
-                mLabelCardView.setElevation(0);
-            } else {
-                mLabelCardView.setBackgroundColor(Color.TRANSPARENT);
-                mLabelCardViewBackground = mLabelCardView.getBackground();
-            }
+            mLabelCardViewElevation = mLabelCardView.getElevation();
+            mLabelCardView.setElevation(0);
         } else {
             mLabelCardView.setCardBackgroundColor(ColorStateList.valueOf(color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (mLabelCardViewElevation != 0) {
-                    mLabelCardView.setElevation(mLabelCardViewElevation);
-                    mLabelCardViewElevation = 0;
-                }
-            } else {
-                if (mLabelCardViewBackground != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mLabelCardView.setBackground(mLabelCardViewBackground);
-                    } else {
-                        mLabelCardView.setBackgroundDrawable(mLabelCardViewBackground);
-                    }
-                    mLabelCardViewBackground = null;
-                }
+            if (mLabelCardViewElevation != 0) {
+                mLabelCardView.setElevation(mLabelCardViewElevation);
+                mLabelCardViewElevation = 0;
             }
         }
     }

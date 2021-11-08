@@ -111,9 +111,7 @@ public class SpeedDialOverlayLayout extends RelativeLayout {
         } finally {
             attr.recycle();
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.sd_overlay_elevation));
-        }
+        setElevation(getResources().getDimension(R.dimen.sd_overlay_elevation));
         setBackgroundColor(overlayColor);
         setVisibility(View.GONE);
         mAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);

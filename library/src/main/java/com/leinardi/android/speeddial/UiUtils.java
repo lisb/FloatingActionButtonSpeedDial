@@ -50,39 +50,21 @@ public class UiUtils {
     }
 
     public static int getPrimaryColor(Context context) {
-        int colorAttr;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            colorAttr = android.R.attr.colorPrimary;
-        } else {
-            //Get colorAccent defined for AppCompat
-            colorAttr = context.getResources().getIdentifier("colorPrimary", "attr", context.getPackageName());
-        }
+        int colorAttr = android.R.attr.colorPrimary;
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(colorAttr, outValue, true);
         return outValue.data;
     }
 
     public static int getOnSecondaryColor(Context context) {
-        int colorAttr;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            colorAttr = R.attr.colorOnSecondary;
-        } else {
-            //Get colorAccent defined for AppCompat
-            colorAttr = context.getResources().getIdentifier("colorOnSecondary", "attr", context.getPackageName());
-        }
+        int colorAttr = R.attr.colorOnSecondary;
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(colorAttr, outValue, true);
         return outValue.data;
     }
 
     public static int getAccentColor(Context context) {
-        int colorAttr;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            colorAttr = android.R.attr.colorAccent;
-        } else {
-            //Get colorAccent defined for AppCompat
-            colorAttr = context.getResources().getIdentifier("colorAccent", "attr", context.getPackageName());
-        }
+        int colorAttr = android.R.attr.colorAccent;
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(colorAttr, outValue, true);
         return outValue.data;

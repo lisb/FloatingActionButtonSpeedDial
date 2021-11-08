@@ -17,9 +17,12 @@
 
 <resources>
     <dimen name="sd_close_elevation">5dp</dimen>
-    <dimen name="sd_fab_mini_size">54dp</dimen>
-    <dimen name="sd_fab_normal_size">72dp</dimen>
-    <dimen name="sd_fab_side_margin">12dp</dimen>|
+    <dimen name="sd_fab_mini_size">48dp</dimen>
+    <dimen name="sd_fab_normal_size">56dp</dimen>
+    <dimen name="sd_fab_mini_margin_between_item">3dp</dimen>
+    <dimen name="sd_fab_normal_margin_between_item">8dp</dimen>
+    <dimen name="sd_main_fab_margin_between_item">16dp</dimen>
+    <dimen name="sd_label_margin">16dp</dimen>
     <dimen name="sd_label_max_width">160dp</dimen>
     <dimen name="sd_open_elevation">8dp</dimen>
     <dimen name="sd_overlay_elevation">@dimen/sd_close_elevation</dimen>

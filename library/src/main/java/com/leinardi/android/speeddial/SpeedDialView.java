@@ -85,8 +85,6 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
     private static final String STATE_KEY_EXPANSION_MODE = "expansionMode";
     private static final int DEFAULT_ROTATE_ANGLE = 45;
     private static final int ACTION_ANIM_DELAY = 25;
-    private static final int MAIN_FAB_HORIZONTAL_MARGIN_IN_DP = 4;
-    private static final int MAIN_FAB_VERTICAL_MARGIN_IN_DP = -2;
     private final InstanceState mInstanceState = new InstanceState();
     private List<FabWithLabelView> mFabWithLabelViews = new ArrayList<>();
     @Nullable
@@ -203,8 +201,7 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
                     Field declaredField = fab.getClass().getDeclaredField("impl");
                     declaredField.setAccessible(true);
                     Object impl = declaredField.get(fab);
-                    Class implClass = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                            ? impl.getClass().getSuperclass() : impl.getClass();
+                    Class implClass = impl.getClass().getSuperclass();
                     Method scale = implClass.getDeclaredMethod("setImageMatrixScale", Float.TYPE);
                     scale.setAccessible(true);
                     scale.invoke(impl, 1.0F);
@@ -722,9 +719,7 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
         mMainFab = createMainFab();
         addView(mMainFab);
         setClipChildren(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.sd_close_elevation));
-        }
+        setElevation(getResources().getDimension(R.dimen.sd_close_elevation));
         TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.SpeedDialView, 0, 0);
         try {
             setEnabled(styledAttrs.getBoolean(R.styleable.SpeedDialView_android_enabled, isEnabled()));
@@ -770,11 +765,7 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
         LayoutParams layoutParams = new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.END;
-        int marginHorizontal = UiUtils.dpToPx(getContext(), MAIN_FAB_HORIZONTAL_MARGIN_IN_DP);
-        int marginVertical = UiUtils.dpToPx(getContext(), MAIN_FAB_VERTICAL_MARGIN_IN_DP);
-        layoutParams.setMargins(marginHorizontal, marginVertical, marginHorizontal, marginVertical);
         floatingActionButton.setId(R.id.sd_main_fab);
-        floatingActionButton.setUseCompatPadding(true);
         floatingActionButton.setLayoutParams(layoutParams);
         floatingActionButton.setClickable(true);
         floatingActionButton.setFocusable(true);
@@ -926,7 +917,24 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
      */
     private void visibilitySetup(boolean visible, boolean animate, boolean reverseAnimation) {
         int size = mFabWithLabelViews.size();
+        final LinearLayout.LayoutParams layoutParams = (LayoutParams) mMainFab.getLayoutParams();
         if (visible) {
+            final int mainFabMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.sd_main_fab_margin_between_item);
+            switch (getExpansionMode()) {
+                case TOP:
+                    layoutParams.setMargins(0, mainFabMargin, 0, 0);
+                    break;
+                case BOTTOM:
+                    layoutParams.setMargins(0, 0, 0, mainFabMargin);
+                    break;
+                case LEFT:
+                    layoutParams.setMargins(mainFabMargin, 0, 0, 0);
+                    break;
+                case RIGHT:
+                    layoutParams.setMargins(0, 0, mainFabMargin, 0);
+                    break;
+            }
             for (int i = 0; i < size; i++) {
                 FabWithLabelView fabWithLabelView = mFabWithLabelViews.get(i);
                 fabWithLabelView.setAlpha(1);
@@ -944,6 +952,8 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
                 }
             }
         } else {
+            layoutParams.setMargins(0, 0, 0, 0);
+
             for (int i = 0; i < size; i++) {
                 int index = reverseAnimation ? size - 1 - i : i;
                 FabWithLabelView fabWithLabelView = mFabWithLabelViews.get(index);
@@ -959,6 +969,7 @@ public class SpeedDialView extends LinearLayout implements CoordinatorLayout.Att
                 }
             }
         }
+        mMainFab.setLayoutParams(layoutParams);
     }
 
     private void showWithAnimationFabWithLabelView(FabWithLabelView fabWithLabelView, int delay) {
