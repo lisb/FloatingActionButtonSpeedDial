@@ -41,7 +41,6 @@ versions.material = "1.0.0"
 versions.mockito = "2.13.3"
 versions.mockito_all = "1.10.19"
 versions.nullaway = "0.9.1"
-versions.publish_plugin = "1.1.0"
 versions.violations_plugin = "1.68.3"
 ext.versions = versions
 

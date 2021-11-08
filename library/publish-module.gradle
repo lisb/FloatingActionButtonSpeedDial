@@ -15,7 +15,6 @@
  */
 
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 apply plugin: 'org.jetbrains.dokka'
 
 task androidSourcesJar(type: Jar) {
@@ -49,7 +48,21 @@ group = PUBLISH_GROUP_ID
 version = PUBLISH_VERSION
 
 afterEvaluate {
+    def localProps = new Properties()
+    localProps.load(rootProject.file('local.properties').newDataInputStream())
+
     publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/lisb/FloatingActionButtonSpeedDial"
+                credentials {
+                    username = localProps["gpr.user"] ?: System.getenv("GPR_USER")
+                    password = localProps["gpr.key"] ?: System.getenv("GPR_KEY")
+                }
+            }
+        }
+
         publications {
             release(MavenPublication) {
                 groupId PUBLISH_GROUP_ID
@@ -91,12 +104,4 @@ afterEvaluate {
             }
         }
     }
-}
-
-ext["signing.keyId"] = rootProject.ext["signing.keyId"]
-ext["signing.password"] = rootProject.ext["signing.password"]
-ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
-
-signing {
-    sign publishing.publications
 }
